@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Your own glossary of words, with groups and auto copy on select">
+  <meta name="author" content="Bubz90">
+  <title>PocketGlossary</title>
+
+  <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/jumbotron/">
+
+
+
+  <!-- Bootstrap core CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+  <!-- Favicons -->
+  <link rel="apple-touch-icon" href="/docs/5.0/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
+  <link rel="icon" href="/docs/5.0/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="/docs/5.0/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
+  <link rel="manifest" href="/docs/5.0/assets/img/favicons/manifest.json">
+  <link rel="mask-icon" href="/docs/5.0/assets/img/favicons/safari-pinned-tab.svg" color="#7952b3">
+  <link rel="icon" href="/docs/5.0/assets/img/favicons/favicon.ico">
+  <meta name="theme-color" content="#7952b3">
+
+
+  <style>
+    .bd-placeholder-img {
+      font-size: 1.125rem;
+      text-anchor: middle;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+    }
+
+    @media (min-width: 768px) {
+      .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+      }
+    }
+  </style>
+
+
+</head>
+
+<body>
+
+  <template id="templateNewGroup">
+    <div class="col-3 mb-3 div-group">
+      <div class="card" style="width: 18rem;">
+        <div class="card-header">
+          <div class="d-flex">
+            <textarea rows="1" class="form-control me-3" onclick="highlightText(this)"></textarea>
+            <button class="btn btn-sm btn-danger pb-2" onclick="removeGroup(this)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                <path
+                  d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <div class="d-flex">
+              <textarea rows="1" class="form-control me-3" onclick="highlightText(this)"></textarea>
+              <button class="btn btn-sm btn-danger pb-2" onclick="removeGroupMember(this)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                  class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                  <path
+                    d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
+                </svg>
+              </button>
+            </div>
+          </li>
+          <li class="list-group-item">
+            <div class="d-flex">
+              <button class="btn btn-sm btn-primary col" onclick="newGroupMember(this)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg"
+                  viewBox="0 0 16 16">
+                  <path fill-rule="evenodd"
+                    d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" />
+                </svg>
+              </button>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </template>
+
+  <template id="templateNewGroupMember">
+    <li class="list-group-item">
+      <div class="d-flex">
+        <textarea rows="1" class="form-control me-3" onclick="highlightText(this)"></textarea>
+        <button class="btn btn-sm btn-danger pb-2" onclick="removeGroupMember(this)">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill"
+            viewBox="0 0 16 16">
+            <path
+              d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
+          </svg>
+        </button>
+      </div>
+    </li>
+  </template>
+
+  <main>
+    <div class="container py-4">
+      <header class="pb-3 mb-4 border-bottom">
+        <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
+          <img width="40" height="32"
+            src="data:image/png;base64,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"
+            alt="PocketGlossary">
+          <span class="ps-3 fs-4">PocketGlossary</span>
+        </a>
+      </header>
+
+      <div class="row mb-3">
+        <div class="d-flex">
+          <button class="btn btn-primary col-2" onclick="newGroup()">New Group</button>
+          <textarea class="ms-2 form-control" onkeyup="filterGroups(this)" placeholder="Search keyword..."
+            autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" rows="1"></textarea>
+        </div>
+      </div>
+
+      <div class="row" id="divGroups">
+      </div>
+
+      <footer class="pt-3 mt-4 text-muted border-top">
+        PocketGlossary &copy; 2024
+      </footer>
+    </div>
+  </main>
+
+  <script>
+    function highlightText(input) {
+      input.select();
+      document.execCommand("copy");
+    }
+
+    function removeGroup(button) {
+      var group = button.closest('.div-group');
+      group.parentNode.removeChild(group);
+    }
+
+    function newGroup() {
+      var template = document.getElementById("templateNewGroup");
+      var newGroupHTML = template.content.cloneNode(true);
+      document.getElementById("divGroups").appendChild(newGroupHTML);
+    }
+
+    function removeGroupMember(button) {
+      var li = button.closest('.list-group-item');
+      li.parentNode.removeChild(li);
+    }
+
+    function newGroupMember(obj) {
+      var myList = obj.closest('.list-group-flush');
+      var secondLastIndex = myList.children.length - 1;
+      var secondLastItem = myList.children[secondLastIndex];
+
+      var template = document.getElementById("templateNewGroupMember");
+      var newItem = template.content.cloneNode(true);
+
+      myList.insertBefore(newItem, secondLastItem);
+    }
+
+    function filterGroups(input) {
+      var searchText = input.value.toLowerCase();
+
+      var groups = document.querySelectorAll('.div-group');
+      if (searchText == "") {
+        groups.forEach(function (group) {
+          group.classList.remove('d-none');
+        });
+      } else {
+        groups.forEach(function (group) {
+          group.classList.add('d-none');
+        });
+      }
+
+      var inputs = document.querySelectorAll('.div-group textarea');
+      inputs.forEach(function (input) {
+        var inputValue = input.value.toLowerCase();
+        var group = input.closest('.div-group');
+
+        if (inputValue.indexOf(searchText) != -1) {
+          group.classList.remove('d-none');
+        }
+      });
+    }
+  </script>
+
+
+</body>
+
+</html>
