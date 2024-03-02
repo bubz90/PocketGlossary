@@ -48,11 +48,11 @@
 <body>
 
   <template id="templateNewGroup">
-    <div class="col-3 mb-3 div-group">
-      <div class="card" style="width: 18rem;">
+    <div class="col-3 mb-3 div-group" id="tempId">
+      <div class="card">
         <div class="card-header">
           <div class="d-flex">
-            <textarea rows="1" class="form-control me-3" onclick="highlightText(this)"></textarea>
+            <textarea rows="1" class="form-control me-3 input-title" onclick="highlightText(this)"></textarea>
             <button class="btn btn-sm btn-danger pb-2" onclick="removeGroup(this)">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                 class="bi bi-trash3-fill" viewBox="0 0 16 16">
@@ -65,19 +65,10 @@
         <ul class="list-group list-group-flush">
           <li class="list-group-item">
             <div class="d-flex">
-              <textarea rows="1" class="form-control me-3" onclick="highlightText(this)"></textarea>
-              <button class="btn btn-sm btn-danger pb-2" onclick="removeGroupMember(this)">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                  class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                  <path
-                    d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06m6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528M8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
-                </svg>
+              <button class="btn btn-sm btn-outline-primary col me-2" onclick="showHideMember(this)">
+                Show / Hide
               </button>
-            </div>
-          </li>
-          <li class="list-group-item">
-            <div class="d-flex">
-              <button class="btn btn-sm btn-primary col" onclick="newGroupMember(this)">
+              <button class="btn btn-sm btn-primary col ms-2" onclick="newGroupMember(this)">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg"
                   viewBox="0 0 16 16">
                   <path fill-rule="evenodd"
@@ -87,6 +78,13 @@
             </div>
           </li>
         </ul>
+        <!-- <div class="card-footer">
+          <div class="d-flex">
+            <button class="btn btn-sm btn-secondary col" onclick="removeGroup(this)">
+              Show/Hide Member
+            </button>
+          </div>
+        </div> -->
       </div>
     </div>
   </template>
@@ -94,7 +92,7 @@
   <template id="templateNewGroupMember">
     <li class="list-group-item">
       <div class="d-flex">
-        <textarea rows="1" class="form-control me-3" onclick="highlightText(this)"></textarea>
+        <textarea rows="1" class="form-control me-3 input-member" id="tempId" onclick="highlightText(this)"></textarea>
         <button class="btn btn-sm btn-danger pb-2" onclick="removeGroupMember(this)">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill"
             viewBox="0 0 16 16">
@@ -129,12 +127,89 @@
       </div>
 
       <footer class="pt-3 mt-4 text-muted border-top">
-        PocketGlossary &copy; 2024
+        PocketGlossary &copy; 2024 - v20240303.139
       </footer>
     </div>
   </main>
 
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
   <script>
+    $(document).ready(function () {
+      if (getCookie("PocketGlossary-Data") == null) {
+        setCookie("PocketGlossary-Data", `[]`, 999);
+      } else {
+        let data = JSON.parse(getCookie("PocketGlossary-Data"));
+        data.forEach(item => {
+          restoreGroup(item);
+        });
+      }
+      console.log("session data:", JSON.parse(getCookie("PocketGlossary-Data")));
+
+      $('body').on('input', 'textarea', function () {
+        let text = $(this).val();
+
+        let group_id = $(this).closest('.div-group').attr('id');
+
+        let json_data = JSON.parse(getCookie("PocketGlossary-Data"));
+
+        let group_item = json_data.filter(item => item.id == group_id)[0];
+        if ($(this).hasClass('input-title')) {
+          group_item.title = text;
+        } else if ($(this).hasClass('input-member')) {
+          let member_id = $(this).attr('id');
+          let member_item = group_item.member.filter(item => item.id == member_id)[0];
+          member_item.text = text;
+        }
+
+        setCookie("PocketGlossary-Data", JSON.stringify(json_data), 999);
+      });
+    });
+
+    function restoreGroup(group_data) {
+      var templateGroup = document.getElementById("templateNewGroup");
+      var newGroupHTML = templateGroup.content.cloneNode(true);
+
+      // Find the specific element within the cloned HTML content
+      var specificElement = $(newGroupHTML).find('#tempId');
+
+      // Set the new id for the specific element
+      specificElement.attr('id', group_data.id);
+
+      // Find textarea with class input-title and set value to group_data.title
+      $(newGroupHTML).find('textarea.input-title').val(group_data.title);
+
+      // Append the manipulated HTML content to the desired parent element
+      document.getElementById("divGroups").appendChild(newGroupHTML);
+
+      var element = document.getElementById(group_data.id);
+
+      // Restore group members
+      group_data.member.forEach(item => {
+        var myList = element.getElementsByClassName("list-group-flush")[0];
+
+        var secondLastIndex = myList.children.length - 1;
+        var secondLastItem = myList.children[secondLastIndex];
+
+        var templateMember = document.getElementById("templateNewGroupMember");
+        var newGroupMemberHTML = templateMember.content.cloneNode(true);
+        var specificElementMember = $(newGroupMemberHTML).find('#tempId');
+        specificElementMember.attr('id', item.id);
+
+        $(newGroupMemberHTML).find('textarea.input-member').val(item.text);
+
+        myList.insertBefore(newGroupMemberHTML, secondLastItem);
+      });
+
+      var inputs = element.querySelectorAll('.div-group textarea');
+      inputs.forEach(function (input) {
+        var listItem = input.closest('li');
+        if (listItem) {
+          listItem.classList.add('d-none');
+        }
+      });
+    }
+
     function highlightText(input) {
       input.select();
       document.execCommand("copy");
@@ -142,18 +217,50 @@
 
     function removeGroup(button) {
       var group = button.closest('.div-group');
+      var group_id = group.getAttribute('id');
       group.parentNode.removeChild(group);
+
+      let json_data = JSON.parse(getCookie("PocketGlossary-Data"));
+      var indexToDelete = json_data.findIndex(item => item.id === group_id);
+      json_data.splice(indexToDelete, 1);
+      setCookie("PocketGlossary-Data", JSON.stringify(json_data), 999);
     }
 
     function newGroup() {
       var template = document.getElementById("templateNewGroup");
       var newGroupHTML = template.content.cloneNode(true);
+
+      // Find the specific element within the cloned HTML content
+      var specificElement = $(newGroupHTML).find('#tempId');
+
+      // Set the new id for the specific element
+      let random_id = generateRandomString(16);
+      specificElement.attr('id', random_id);
+
+      // Append the manipulated HTML content to the desired parent element
       document.getElementById("divGroups").appendChild(newGroupHTML);
+
+      let json_data = JSON.parse(getCookie("PocketGlossary-Data"));
+      json_data.push({ id: random_id, title: '', member: [] });
+      setCookie("PocketGlossary-Data", JSON.stringify(json_data), 999);
     }
 
     function removeGroupMember(button) {
+      var group = button.closest('.div-group');
+      var group_id = group.getAttribute('id');
+
+      var member_input = group.querySelector('.input-member');
+      var member_id = member_input.getAttribute('id');
+
       var li = button.closest('.list-group-item');
       li.parentNode.removeChild(li);
+
+      let json_data = JSON.parse(getCookie("PocketGlossary-Data"));
+      let group_item = json_data.filter(item => item.id === group_id)[0];
+
+      let indexToDelete = group_item.member.findIndex(item => item.id === member_id);
+      group_item.member.splice(indexToDelete, 1);
+      setCookie("PocketGlossary-Data", JSON.stringify(json_data), 999);
     }
 
     function newGroupMember(obj) {
@@ -162,34 +269,116 @@
       var secondLastItem = myList.children[secondLastIndex];
 
       var template = document.getElementById("templateNewGroupMember");
-      var newItem = template.content.cloneNode(true);
+      var newGroupHTML = template.content.cloneNode(true);
+      var specificElement = $(newGroupHTML).find('#tempId');
 
-      myList.insertBefore(newItem, secondLastItem);
+      let group_id = $(obj).closest('.div-group').attr('id');
+
+      let random_id = `${group_id}-${generateRandomString(8)}`;
+      specificElement.attr('id', random_id);
+
+      myList.insertBefore(newGroupHTML, secondLastItem);
+
+      let json_data = JSON.parse(getCookie("PocketGlossary-Data"));
+      let group_item = json_data.filter(item => item.id == group_id);
+      let group_member = group_item[0].member;
+      group_member.push({ id: random_id, text: '' });
+      setCookie("PocketGlossary-Data", JSON.stringify(json_data), 999);
+    }
+
+    function showHideMember(obj) {
+      var myList = obj.closest('.list-group-flush');
+      var listItems = myList.querySelectorAll('li');
+
+      // Check if the first element has the 'd-none' class
+      var firstItem = listItems[0];
+      var isFirstItemHidden = firstItem.classList.contains('d-none');
+
+      // If the first element has the 'd-none' class, remove 'd-none' from all list items except the last one
+      // If the first element doesn't have the 'd-none' class, add 'd-none' to all list items except the last one
+      for (var i = 0; i < listItems.length - 1; i++) {
+        if (isFirstItemHidden) {
+          listItems[i].classList.remove('d-none');
+        } else {
+          listItems[i].classList.add('d-none');
+        }
+      }
     }
 
     function filterGroups(input) {
       var searchText = input.value.toLowerCase();
 
       var groups = document.querySelectorAll('.div-group');
+      var inputs = document.querySelectorAll('.div-group textarea');
       if (searchText == "") {
         groups.forEach(function (group) {
           group.classList.remove('d-none');
         });
+        // inputs.forEach(function (input) {
+        //   var listItem = input.closest('li');
+        //   if (listItem) {
+        //     listItem.classList.remove('d-none');
+        //   }
+        // });
       } else {
         groups.forEach(function (group) {
           group.classList.add('d-none');
         });
       }
 
-      var inputs = document.querySelectorAll('.div-group textarea');
+      // var inputs = document.querySelectorAll('.div-group textarea');
       inputs.forEach(function (input) {
         var inputValue = input.value.toLowerCase();
         var group = input.closest('.div-group');
 
         if (inputValue.indexOf(searchText) != -1) {
           group.classList.remove('d-none');
+          var listItem = input.closest('li');
+          if (listItem) {
+            listItem.classList.remove('d-none');
+          }
+        } else {
+          var listItem = input.closest('li');
+          if (listItem) {
+            listItem.classList.add('d-none');
+          }
         }
       });
+    }
+
+    function generateRandomString(length) {
+      var result = '';
+      var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      var charactersLength = characters.length;
+      for (var i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      }
+      return result;
+    }
+
+    function setCookie(name, value, days) {
+      var expires = "";
+      if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+      }
+      document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
+
+    function getCookie(name) {
+      var nameEQ = name + "=";
+      var ca = document.cookie.split(';');
+      for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+          c = c.substring(1, c.length);
+        }
+        if (c.indexOf(nameEQ) == 0) {
+          return c.substring(nameEQ.length, c.length);
+        }
+      }
+      return null;
     }
   </script>
 
