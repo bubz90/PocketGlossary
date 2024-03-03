@@ -137,21 +137,21 @@
   <script>
     $(document).ready(function () {
       if (getCookie("PocketGlossary-Data") == null) {
-        setCookie("PocketGlossary-Data", `[]`, 999);
+        setCookie("PocketGlossary-Data", []);
       } else {
-        let data = JSON.parse(getCookie("PocketGlossary-Data"));
+        let data = getCookie("PocketGlossary-Data");
         data.forEach(item => {
           restoreGroup(item);
         });
       }
-      console.log("session data:", JSON.parse(getCookie("PocketGlossary-Data")));
+      console.log("session data:", getCookie("PocketGlossary-Data"));
 
       $('body').on('input', 'textarea', function () {
-        let text = $(this).val();
+        let text = $(this).val().trim();
 
         let group_id = $(this).closest('.div-group').attr('id');
 
-        let json_data = JSON.parse(getCookie("PocketGlossary-Data"));
+        let json_data = getCookie("PocketGlossary-Data");
 
         let group_item = json_data.filter(item => item.id == group_id)[0];
         if ($(this).hasClass('input-title')) {
@@ -162,7 +162,7 @@
           member_item.text = text;
         }
 
-        setCookie("PocketGlossary-Data", JSON.stringify(json_data), 999);
+        setCookie("PocketGlossary-Data", json_data);
       });
     });
 
@@ -220,10 +220,10 @@
       var group_id = group.getAttribute('id');
       group.parentNode.removeChild(group);
 
-      let json_data = JSON.parse(getCookie("PocketGlossary-Data"));
+      let json_data = getCookie("PocketGlossary-Data");
       var indexToDelete = json_data.findIndex(item => item.id === group_id);
       json_data.splice(indexToDelete, 1);
-      setCookie("PocketGlossary-Data", JSON.stringify(json_data), 999);
+      setCookie("PocketGlossary-Data", json_data);
     }
 
     function newGroup() {
@@ -240,9 +240,9 @@
       // Append the manipulated HTML content to the desired parent element
       document.getElementById("divGroups").appendChild(newGroupHTML);
 
-      let json_data = JSON.parse(getCookie("PocketGlossary-Data"));
+      let json_data = getCookie("PocketGlossary-Data");
       json_data.push({ id: random_id, title: '', member: [] });
-      setCookie("PocketGlossary-Data", JSON.stringify(json_data), 999);
+      setCookie("PocketGlossary-Data", json_data);
     }
 
     function removeGroupMember(button) {
@@ -255,12 +255,12 @@
       var li = button.closest('.list-group-item');
       li.parentNode.removeChild(li);
 
-      let json_data = JSON.parse(getCookie("PocketGlossary-Data"));
+      let json_data = getCookie("PocketGlossary-Data");
       let group_item = json_data.filter(item => item.id === group_id)[0];
 
       let indexToDelete = group_item.member.findIndex(item => item.id === member_id);
       group_item.member.splice(indexToDelete, 1);
-      setCookie("PocketGlossary-Data", JSON.stringify(json_data), 999);
+      setCookie("PocketGlossary-Data", json_data);
     }
 
     function newGroupMember(obj) {
@@ -279,11 +279,11 @@
 
       myList.insertBefore(newGroupHTML, secondLastItem);
 
-      let json_data = JSON.parse(getCookie("PocketGlossary-Data"));
+      let json_data = getCookie("PocketGlossary-Data");
       let group_item = json_data.filter(item => item.id == group_id);
       let group_member = group_item[0].member;
       group_member.push({ id: random_id, text: '' });
-      setCookie("PocketGlossary-Data", JSON.stringify(json_data), 999);
+      setCookie("PocketGlossary-Data", json_data);
     }
 
     function showHideMember(obj) {
@@ -356,30 +356,19 @@
       return result;
     }
 
-    function setCookie(name, value, days) {
-      var expires = "";
-      if (days) {
-        var date = new Date();
-        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-        expires = "; expires=" + date.toUTCString();
-      }
-      document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    function setCookie(name, value) {
+      localStorage.setItem(name, JSON.stringify({ value: value }));
     }
 
     function getCookie(name) {
-      var nameEQ = name + "=";
-      var ca = document.cookie.split(';');
-      for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') {
-          c = c.substring(1, c.length);
-        }
-        if (c.indexOf(nameEQ) == 0) {
-          return c.substring(nameEQ.length, c.length);
-        }
+      var item = localStorage.getItem(name);
+      if (item) {
+        return JSON.parse(item).value;
       }
       return null;
     }
+
+
   </script>
 
 
