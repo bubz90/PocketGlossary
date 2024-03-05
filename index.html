@@ -15,6 +15,9 @@
   <!-- Bootstrap core CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
 
   <!-- Favicons -->
   <link rel="apple-touch-icon" href="/docs/5.0/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
@@ -40,6 +43,13 @@
         font-size: 3.5rem;
       }
     }
+
+    textarea {
+      resize: none;
+      /* Disable manual resizing */
+      overflow-y: hidden;
+      /* Hide scrollbar */
+    }
   </style>
 
 
@@ -48,11 +58,11 @@
 <body>
 
   <template id="templateNewGroup">
-    <div class="col-3 mb-3 div-group" id="tempId">
+    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-12 mb-3 div-group" id="tempId">
       <div class="card">
-        <div class="card-header">
+        <div class="card-header p-1">
           <div class="d-flex">
-            <textarea rows="1" class="form-control me-3 input-title" onclick="highlightText(this)"></textarea>
+            <textarea rows="1" class="form-control me-1 input-title p-1" onclick="highlightText(this)"></textarea>
             <button class="btn btn-sm btn-danger pb-2" onclick="removeGroup(this)">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                 class="bi bi-trash3-fill" viewBox="0 0 16 16">
@@ -63,12 +73,12 @@
           </div>
         </div>
         <ul class="list-group list-group-flush">
-          <li class="list-group-item">
+          <li class="list-group-item p-1">
             <div class="d-flex">
-              <button class="btn btn-sm btn-outline-primary col me-2" onclick="showHideMember(this)">
+              <button class="btn btn-sm btn-outline-primary col me-1" onclick="showHideMember(this)">
                 Show / Hide
               </button>
-              <button class="btn btn-sm btn-primary col ms-2" onclick="newGroupMember(this)">
+              <button class="btn btn-sm btn-primary col-4" onclick="newGroupMember(this)">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg"
                   viewBox="0 0 16 16">
                   <path fill-rule="evenodd"
@@ -90,9 +100,10 @@
   </template>
 
   <template id="templateNewGroupMember">
-    <li class="list-group-item">
+    <li class="list-group-item p-1">
       <div class="d-flex">
-        <textarea rows="1" class="form-control me-3 input-member" id="tempId" onclick="highlightText(this)"></textarea>
+        <textarea rows="1" class="form-control me-1 input-member p-1" id="tempId"
+          onclick="highlightText(this)"></textarea>
         <button class="btn btn-sm btn-danger pb-2" onclick="removeGroupMember(this)">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3-fill"
             viewBox="0 0 16 16">
@@ -117,8 +128,19 @@
 
       <div class="row mb-3">
         <div class="d-flex">
-          <button class="btn btn-primary col-2" onclick="newGroup()">New Group</button>
-          <textarea class="ms-2 form-control" onkeyup="filterGroups(this)" placeholder="Search keyword..."
+          <button class="btn btn-primary p-1" onclick="sortGroup()"><svg xmlns="http://www.w3.org/2000/svg" width="24"
+              height="24" fill="currentColor" class="bi bi-sort-up-alt" viewBox="0 0 16 16">
+              <path
+                d="M3.5 13.5a.5.5 0 0 1-1 0V4.707L1.354 5.854a.5.5 0 1 1-.708-.708l2-1.999.007-.007a.5.5 0 0 1 .7.006l2 2a.5.5 0 1 1-.707.708L3.5 4.707zm4-9.5a.5.5 0 0 1 0-1h1a.5.5 0 0 1 0 1zm0 3a.5.5 0 0 1 0-1h3a.5.5 0 0 1 0 1zm0 3a.5.5 0 0 1 0-1h5a.5.5 0 0 1 0 1zM7 12.5a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 0-1h-7a.5.5 0 0 0-.5.5" />
+            </svg></button>
+          <button class="btn btn-primary p-1 ms-1" onclick="newGroup()"><svg xmlns="http://www.w3.org/2000/svg" width="24"
+              height="24" fill="currentColor" class="bi bi-folder-plus" viewBox="0 0 16 16">
+              <path
+                d="m.5 3 .04.87a2 2 0 0 0-.342 1.311l.637 7A2 2 0 0 0 2.826 14H9v-1H2.826a1 1 0 0 1-.995-.91l-.637-7A1 1 0 0 1 2.19 4h11.62a1 1 0 0 1 .996 1.09L14.54 8h1.005l.256-2.819A2 2 0 0 0 13.81 3H9.828a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 6.172 1H2.5a2 2 0 0 0-2 2m5.672-1a1 1 0 0 1 .707.293L7.586 3H2.19q-.362.002-.683.12L1.5 2.98a1 1 0 0 1 1-.98z" />
+              <path
+                d="M13.5 9a.5.5 0 0 1 .5.5V11h1.5a.5.5 0 1 1 0 1H14v1.5a.5.5 0 1 1-1 0V12h-1.5a.5.5 0 0 1 0-1H13V9.5a.5.5 0 0 1 .5-.5" />
+            </svg></button>
+          <textarea class="ms-1 form-control col" onkeyup="filterGroups(this)" placeholder="Search keyword..."
             autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" rows="1"></textarea>
         </div>
       </div>
@@ -127,24 +149,30 @@
       </div>
 
       <footer class="pt-3 mt-4 text-muted border-top">
-        PocketGlossary &copy; 2024 - v20240303.139
+        PocketGlossary &copy; 2024 - v20240305.118
       </footer>
+    </div>
+
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+      <div id="liveToast" class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body">
+            <button class="btn btn-sm btn-primary" onclick="undoDelete()">Undo Group Delete</button>
+          </div>
+          <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      </div>
     </div>
   </main>
 
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"
     integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
   <script>
     $(document).ready(function () {
       if (getCookie("PocketGlossary-Data") == null) {
         setCookie("PocketGlossary-Data", []);
-      } else {
-        let data = getCookie("PocketGlossary-Data");
-        data.forEach(item => {
-          restoreGroup(item);
-        });
       }
-      console.log("session data:", getCookie("PocketGlossary-Data"));
 
       $('body').on('input', 'textarea', function () {
         let text = $(this).val().trim();
@@ -164,7 +192,50 @@
 
         setCookie("PocketGlossary-Data", json_data);
       });
+
+      $(document).on('input', 'textarea', function () {
+        $(this).css('height', 'auto').css('height', this.scrollHeight + 'px');
+      });
+
+      $('textarea').each(function () {
+        $(this).trigger('input');
+      });
+
+      $(document).on('keyup', function (e) {
+        if (e.key === 'Escape') {
+          $('.list-group-flush').each(function () {
+            var listItems = this.querySelectorAll('li');
+
+            for (var i = 0; i < listItems.length - 1; i++) {
+              listItems[i].classList.add('d-none');
+            }
+          });
+        }
+      });
+
+      sortGroup();
     });
+
+    var sortingDirection = "";
+    function sortGroup() {
+      $("#divGroups").empty();
+
+      if (sortingDirection == "asc") {
+        sortingDirection = "desc";
+
+        let data = getCookie("PocketGlossary-Data");
+        data.sort((a, b) => b.title.localeCompare(a.title)).forEach(item => {
+          restoreGroup(item);
+        });
+      } else {
+        sortingDirection = "asc";
+
+        let data = getCookie("PocketGlossary-Data");
+        data.sort((a, b) => a.title.localeCompare(b.title)).forEach(item => {
+          restoreGroup(item);
+        });
+      }
+    }
 
     function restoreGroup(group_data) {
       var templateGroup = document.getElementById("templateNewGroup");
@@ -215,6 +286,7 @@
       document.execCommand("copy");
     }
 
+    var deletedJson = null;
     function removeGroup(button) {
       var group = button.closest('.div-group');
       var group_id = group.getAttribute('id');
@@ -222,8 +294,22 @@
 
       let json_data = getCookie("PocketGlossary-Data");
       var indexToDelete = json_data.findIndex(item => item.id === group_id);
+      deletedJson = json_data[indexToDelete];
       json_data.splice(indexToDelete, 1);
       setCookie("PocketGlossary-Data", json_data);
+
+      $("#liveToast").toast("show");
+    }
+
+    function undoDelete() {
+      let json_data = getCookie("PocketGlossary-Data");
+      json_data.push(deletedJson);
+      setCookie("PocketGlossary-Data", json_data);
+
+      restoreGroup(deletedJson);
+
+      deletedJson = null;
+      $("#liveToast").toast("hide");
     }
 
     function newGroup() {
@@ -234,7 +320,7 @@
       var specificElement = $(newGroupHTML).find('#tempId');
 
       // Set the new id for the specific element
-      let random_id = generateRandomString(16);
+      let random_id = generateRandomString(32);
       specificElement.attr('id', random_id);
 
       // Append the manipulated HTML content to the desired parent element
@@ -274,7 +360,7 @@
 
       let group_id = $(obj).closest('.div-group').attr('id');
 
-      let random_id = `${group_id}-${generateRandomString(8)}`;
+      let random_id = `${group_id}-${generateRandomString(16)}`;
       specificElement.attr('id', random_id);
 
       myList.insertBefore(newGroupHTML, secondLastItem);
@@ -299,6 +385,10 @@
       for (var i = 0; i < listItems.length - 1; i++) {
         if (isFirstItemHidden) {
           listItems[i].classList.remove('d-none');
+
+          $(listItems[i]).find('textarea').each(function () {
+            $(this).trigger('input');
+          });
         } else {
           listItems[i].classList.add('d-none');
         }
